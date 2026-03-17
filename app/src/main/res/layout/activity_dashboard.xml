@@ -30,7 +30,7 @@
         android:id="@+id/settingsBtn"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:text="⚙️ إعدادات الربط (API & Blogger)"
+        android:text="⚙️ إعدادات الربط (API &amp; Blogger)"
         android:backgroundTint="#475569"
         android:textColor="#ffffff"
         android:layout_marginBottom="15dp"/>
