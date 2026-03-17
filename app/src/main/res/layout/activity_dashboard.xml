@@ -8,23 +8,32 @@
     android:padding="20dp">
 
     <TextView
+        android:id="@+id/planText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="لوحة تحكم العميل"
-        android:textColor="#3b82f6"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
+        android:text="الباقة: مجانية (تتضمن إعلانات)"
+        android:textColor="#94a3b8"
+        android:textSize="14sp"
+        android:layout_marginBottom="5dp"/>
 
     <TextView
         android:id="@+id/balanceText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="رصيد المقالات: جاري التحميل..."
+        android:text="رصيد المقالات: --"
         android:textColor="#10b981"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginBottom="40dp"/>
+        android:layout_marginBottom="30dp"/>
+
+    <Button
+        android:id="@+id/settingsBtn"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:text="⚙️ إعدادات الربط (API & Blogger)"
+        android:backgroundTint="#475569"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/generatePostBtn"
@@ -33,19 +42,27 @@
         android:text="توليد ونشر مقال جديد"
         android:backgroundTint="#3b82f6"
         android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:layout_marginBottom="20dp"/>
+        android:textStyle="bold"
+        android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/watchAdBtn"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="🎁 شاهد إعلان واربح مقال مجاني"
+        android:text="🎁 شاهد إعلان واربح مقال"
         android:backgroundTint="#f59e0b"
         android:textColor="#ffffff"
-        android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="15dp"/>
+
+    <Button
+        android:id="@+id/upgradeBtn"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:text="🚀 الترقية لـ Pro (بدون إعلانات)"
+        android:backgroundTint="#8b5cf6"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/logoutBtn"
