@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0f172a"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Boda Droid SaaS"
+        android:textColor="#3b82f6"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="30dp"/>
+
+    <EditText
+        android:id="@+id/emailInput"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="البريد الإلكتروني"
+        android:textColorHint="#94a3b8"
+        android:textColor="#ffffff"
+        android:background="#1e293b"
+        android:padding="10dp"
+        android:layout_marginBottom="15dp"/>
+
+    <EditText
+        android:id="@+id/passInput"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="كلمة المرور"
+        android:textColorHint="#94a3b8"
+        android:textColor="#ffffff"
+        android:inputType="textPassword"
+        android:background="#1e293b"
+        android:padding="10dp"
+        android:layout_marginBottom="25dp"/>
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="دخول آمن"
+        android:backgroundTint="#3b82f6"
+        android:textColor="#ffffff"
+        android:textSize="18sp"/>
+
+</LinearLayout>
