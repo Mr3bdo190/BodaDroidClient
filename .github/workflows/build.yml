@@ -24,8 +24,8 @@ jobs:
       run: |
         echo $FIREBASE_SECRET | base64 -d > app/google-services.json
 
-    - name: 🏗️ توليد محرك Gradle المفقود
-      run: gradle wrapper
+    - name: 🏗️ توليد محرك Gradle متوافق (إصدار 8.0)
+      run: gradle wrapper --gradle-version 8.0
 
     - name: 🛠️ إعطاء صلاحيات التشغيل
       run: chmod +x gradlew
