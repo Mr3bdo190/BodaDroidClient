@@ -2,8 +2,10 @@ package com.bodadroid.client
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -75,7 +77,7 @@ class DashboardActivity : AppCompatActivity() {
         upgradeBtn.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("الترقية للباقة الاحترافية 🚀")
-                .setMessage("باقة Pro تمنحك سرعة توليد مضاعفة، وتلغي الإعلانات تماماً!\n\nتواصل مع إدارة Boda Droid للترقية.")
+                .setMessage("باقة Pro تمنحك سرعة توليد مضاعفة، وتلغي الإعلانات!\n\nتواصل مع الدعم للترقية.")
                 .setPositiveButton("حسناً", null)
                 .show()
         }
@@ -94,7 +96,7 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
-        // الزر السحري (إرسال الطلب للسيرفر)
+        // إظهار نافذة تخصيص المقال عند الضغط
         generatePostBtn.setOnClickListener {
             if (userApiKey.isEmpty() || userBloggerId.isEmpty()) {
                 Toast.makeText(this, "⚠️ يرجى ضبط إعدادات المفاتيح أولاً من ⚙️ الإعدادات!", Toast.LENGTH_LONG).show()
@@ -102,27 +104,7 @@ class DashboardActivity : AppCompatActivity() {
             }
 
             if (currentBalance > 0) {
-                generatePostBtn.isEnabled = false
-                generatePostBtn.text = "⏳ جاري إرسال الطلب..."
-                
-                // إنشاء الأوردر في قاعدة البيانات
-                val requestMap = hashMapOf(
-                    "user_id" to userId,
-                    "api_key" to userApiKey,
-                    "blogger_id" to userBloggerId,
-                    "status" to "pending", // الحالة: قيد الانتظار
-                    "timestamp" to FieldValue.serverTimestamp()
-                )
-                
-                db.collection("Requests").add(requestMap).addOnSuccessListener {
-                    // خصم الرصيد بعد نجاح الإرسال
-                    currentBalance -= 1
-                    db.collection("Users").document(userId).update("remaining_posts", currentBalance)
-                    
-                    Toast.makeText(this, "✅ تم إرسال الطلب للسيرفر! سيتم النشر قريباً.", Toast.LENGTH_LONG).show()
-                    generatePostBtn.isEnabled = true
-                    generatePostBtn.text = "توليد ونشر مقال جديد"
-                }
+                showCreatePostDialog(userId)
             } else {
                 Toast.makeText(this, "رصيدك 0! شاهد إعلاناً أو قم بالترقية.", Toast.LENGTH_LONG).show()
             }
@@ -142,5 +124,61 @@ class DashboardActivity : AppCompatActivity() {
             override fun onAdFailedToLoad(adError: LoadAdError) { rewardedAd = null }
             override fun onAdLoaded(ad: RewardedAd) { rewardedAd = ad }
         })
+    }
+
+    // دالة عرض النافذة وجمع التفاصيل
+    private fun showCreatePostDialog(userId: String) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_post, null)
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+
+        val topicInput = dialogView.findViewById<EditText>(R.id.topicInput)
+        val nicheInput = dialogView.findViewById<EditText>(R.id.nicheInput)
+        val instructionsInput = dialogView.findViewById<EditText>(R.id.instructionsInput)
+        val confirmBtn = dialogView.findViewById<Button>(R.id.confirmGenerateBtn)
+
+        confirmBtn.setOnClickListener {
+            val topic = topicInput.text.toString().trim()
+            val niche = nicheInput.text.toString().trim()
+            val instructions = instructionsInput.text.toString().trim()
+
+            if (topic.isEmpty() || niche.isEmpty()) {
+                Toast.makeText(this, "يرجى كتابة الفكرة والمجال على الأقل!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            dialog.dismiss()
+            sendPostRequestToServer(userId, topic, niche, instructions)
+        }
+        dialog.show()
+    }
+
+    // دالة إرسال الطلب المخصص للسيرفر
+    private fun sendPostRequestToServer(userId: String, topic: String, niche: String, instructions: String) {
+        val generatePostBtn = findViewById<Button>(R.id.generatePostBtn)
+        generatePostBtn.isEnabled = false
+        generatePostBtn.text = "⏳ جاري إرسال الطلب..."
+
+        val requestMap = hashMapOf(
+            "user_id" to userId,
+            "api_key" to userApiKey,
+            "blogger_id" to userBloggerId,
+            "topic" to topic,
+            "niche" to niche,
+            "instructions" to instructions, // التعليمات الإضافية
+            "status" to "pending",
+            "timestamp" to FieldValue.serverTimestamp()
+        )
+
+        db.collection("Requests").add(requestMap).addOnSuccessListener {
+            currentBalance -= 1
+            db.collection("Users").document(userId).update("remaining_posts", currentBalance)
+            Toast.makeText(this, "✅ تم إرسال الطلب! الذكاء الاصطناعي يكتبه الآن.", Toast.LENGTH_LONG).show()
+            generatePostBtn.isEnabled = true
+            generatePostBtn.text = "توليد ونشر مقال جديد"
+        }.addOnFailureListener {
+            Toast.makeText(this, "❌ حدث خطأ في الإرسال، حاول مجدداً.", Toast.LENGTH_SHORT).show()
+            generatePostBtn.isEnabled = true
+            generatePostBtn.text = "توليد ونشر مقال جديد"
+        }
     }
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1e293b"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="تفاصيل المقال الجديد 📝"
+        android:textColor="#38bdf8"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="15dp"/>
+
+    <EditText
+        android:id="@+id/topicInput"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="عن ماذا يتحدث المقال؟ (الفكرة)"
+        android:textColorHint="#64748b"
+        android:textColor="#ffffff"
+        android:background="#0f172a"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/nicheInput"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="المجال (مثال: تقنية، صحة، رياضة)"
+        android:textColorHint="#64748b"
+        android:textColor="#ffffff"
+        android:background="#0f172a"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/instructionsInput"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="تعليمات إضافية (الكلمات المفتاحية، أسلوب الكتابة...)"
+        android:textColorHint="#64748b"
+        android:textColor="#ffffff"
+        android:background="#0f172a"
+        android:gravity="top|start"
+        android:padding="10dp"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/confirmGenerateBtn"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:text="إرسال الطلب للذكاء الاصطناعي 🚀"
+        android:backgroundTint="#10b981"
+        android:textColor="#ffffff"
+        android:textStyle="bold"/>
+
+</LinearLayout>
