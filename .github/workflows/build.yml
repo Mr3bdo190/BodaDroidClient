@@ -18,13 +18,16 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: 🔐 فك تشفير مفتاح Firebase (google-services.json)
+    - name: 🔐 فك تشفير مفتاح Firebase
       env:
         FIREBASE_SECRET: ${{ secrets.FIREBASE_JSON }}
       run: |
         echo $FIREBASE_SECRET | base64 -d > app/google-services.json
 
-    - name: 🛠️ إعطاء صلاحيات التشغيل لـ Gradle
+    - name: 🏗️ توليد محرك Gradle المفقود
+      run: gradle wrapper
+
+    - name: 🛠️ إعطاء صلاحيات التشغيل
       run: chmod +x gradlew
 
     - name: 🚀 بناء تطبيق الأندرويد (Release APK)
