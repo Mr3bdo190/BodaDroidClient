@@ -49,12 +49,10 @@ class DashboardActivity : AppCompatActivity() {
 
         db.collection("Users").document(userId).addSnapshotListener { snapshot, e ->
             if (e != null || snapshot == null) return@addSnapshotListener
-            
             currentBalance = snapshot.getLong("remaining_posts") ?: 0
             currentPlan = snapshot.getString("plan_type") ?: "free"
             userApiKey = snapshot.getString("api_key") ?: ""
             userBloggerId = snapshot.getString("blogger_id") ?: ""
-            
             balanceText.text = "رصيد المقالات: $currentBalance"
 
             if (currentPlan == "pro" || currentPlan == "lifetime") {
@@ -70,16 +68,12 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
-        settingsBtn.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
-
+        settingsBtn.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         upgradeBtn.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("الترقية للباقة الاحترافية 🚀")
-                .setMessage("باقة Pro تمنحك سرعة توليد مضاعفة، وتلغي الإعلانات!\n\nتواصل مع الدعم للترقية.")
-                .setPositiveButton("حسناً", null)
-                .show()
+                .setMessage("باقة Pro تمنحك سرعة توليد مضاعفة وتلغي الإعلانات!\nتواصل مع الدعم.")
+                .setPositiveButton("حسناً", null).show()
         }
 
         watchAdBtn.setOnClickListener {
@@ -91,23 +85,18 @@ class DashboardActivity : AppCompatActivity() {
                     loadRewardedAd()
                 }
             } else {
-                Toast.makeText(this, "جاري تحميل الإعلان.. انتظر ثوانٍ واضغط مجدداً.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "جاري تحميل الإعلان.. انتظر ثوانٍ.", Toast.LENGTH_SHORT).show()
                 loadRewardedAd()
             }
         }
 
-        // إظهار نافذة تخصيص المقال عند الضغط
         generatePostBtn.setOnClickListener {
             if (userApiKey.isEmpty() || userBloggerId.isEmpty()) {
-                Toast.makeText(this, "⚠️ يرجى ضبط إعدادات المفاتيح أولاً من ⚙️ الإعدادات!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "⚠️ يرجى ضبط المفاتيح من ⚙️ الإعدادات!", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-
-            if (currentBalance > 0) {
-                showCreatePostDialog(userId)
-            } else {
-                Toast.makeText(this, "رصيدك 0! شاهد إعلاناً أو قم بالترقية.", Toast.LENGTH_LONG).show()
-            }
+            if (currentBalance > 0) showCreatePostDialog(userId)
+            else Toast.makeText(this, "رصيدك 0! شاهد إعلاناً أو قم بالترقية.", Toast.LENGTH_LONG).show()
         }
 
         logoutBtn.setOnClickListener {
@@ -126,10 +115,10 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    // دالة عرض النافذة وجمع التفاصيل
     private fun showCreatePostDialog(userId: String) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_post, null)
         val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+        dialog.setCancelable(false)
 
         val topicInput = dialogView.findViewById<EditText>(R.id.topicInput)
         val nicheInput = dialogView.findViewById<EditText>(R.id.nicheInput)
@@ -142,7 +131,7 @@ class DashboardActivity : AppCompatActivity() {
             val instructions = instructionsInput.text.toString().trim()
 
             if (topic.isEmpty() || niche.isEmpty()) {
-                Toast.makeText(this, "يرجى كتابة الفكرة والمجال على الأقل!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "يرجى كتابة الفكرة والمجال!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -152,11 +141,10 @@ class DashboardActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // دالة إرسال الطلب المخصص للسيرفر
     private fun sendPostRequestToServer(userId: String, topic: String, niche: String, instructions: String) {
         val generatePostBtn = findViewById<Button>(R.id.generatePostBtn)
         generatePostBtn.isEnabled = false
-        generatePostBtn.text = "⏳ جاري إرسال الطلب..."
+        generatePostBtn.text = "⏳ جاري التوليد والنشر... يرجى الانتظار"
 
         val requestMap = hashMapOf(
             "user_id" to userId,
@@ -164,21 +152,41 @@ class DashboardActivity : AppCompatActivity() {
             "blogger_id" to userBloggerId,
             "topic" to topic,
             "niche" to niche,
-            "instructions" to instructions, // التعليمات الإضافية
+            "instructions" to instructions,
             "status" to "pending",
             "timestamp" to FieldValue.serverTimestamp()
         )
 
-        db.collection("Requests").add(requestMap).addOnSuccessListener {
+        db.collection("Requests").add(requestMap).addOnSuccessListener { documentReference ->
+            // خصم الرصيد مبدئياً
             currentBalance -= 1
             db.collection("Users").document(userId).update("remaining_posts", currentBalance)
-            Toast.makeText(this, "✅ تم إرسال الطلب! الذكاء الاصطناعي يكتبه الآن.", Toast.LENGTH_LONG).show()
-            generatePostBtn.isEnabled = true
-            generatePostBtn.text = "توليد ونشر مقال جديد"
-        }.addOnFailureListener {
-            Toast.makeText(this, "❌ حدث خطأ في الإرسال، حاول مجدداً.", Toast.LENGTH_SHORT).show()
-            generatePostBtn.isEnabled = true
-            generatePostBtn.text = "توليد ونشر مقال جديد"
+            
+            // مراقبة هذا الطلب تحديداً لمعرفة نتيجته (نجاح أم فشل)
+            documentReference.addSnapshotListener { snapshot, e ->
+                if (e != null || snapshot == null) return@addSnapshotListener
+                
+                val status = snapshot.getString("status")
+                val errorMsg = snapshot.getString("error")
+
+                if (status == "completed") {
+                    generatePostBtn.isEnabled = true
+                    generatePostBtn.text = "توليد ونشر مقال جديد"
+                    showResultDialog("🎉 نجاح عظيم!", "تم كتابة المقال ونشره بنجاح على مدونتك! اذهب لتفقده الآن.")
+                } else if (status == "failed") {
+                    generatePostBtn.isEnabled = true
+                    generatePostBtn.text = "توليد ونشر مقال جديد"
+                    showResultDialog("❌ فشل النشر!", "لم يتم نشر المقال وتم استرجاع رصيدك بأمان.\n\nالسبب:\n$errorMsg")
+                }
+            }
         }
+    }
+
+    private fun showResultDialog(title: String, message: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("حسناً", null)
+            .show()
     }
 }
