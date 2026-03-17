@@ -22,7 +22,7 @@ jobs:
       env:
         FIREBASE_SECRET: ${{ secrets.FIREBASE_JSON }}
       run: |
-        echo $FIREBASE_SECRET | base64 -d > app/google-services.json
+        echo "$FIREBASE_SECRET" | base64 -d > app/google-services.json
 
     - name: 🐘 استدعاء محرك Gradle الرسمي
       uses: gradle/actions/setup-gradle@v3
