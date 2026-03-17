@@ -12,40 +12,59 @@
         android:layout_height="wrap_content"
         android:text="Boda Droid SaaS"
         android:textColor="#3b82f6"
-        android:textSize="28sp"
+        android:textSize="32sp"
         android:textStyle="bold"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="10dp"/>
+        
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="منصة التدوين الآلي الذكية"
+        android:textColor="#94a3b8"
+        android:textSize="14sp"
+        android:layout_marginBottom="40dp"/>
 
     <EditText
         android:id="@+id/emailInput"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         android:hint="البريد الإلكتروني"
-        android:textColorHint="#94a3b8"
+        android:textColorHint="#64748b"
         android:textColor="#ffffff"
         android:background="#1e293b"
-        android:padding="10dp"
+        android:padding="15dp"
         android:layout_marginBottom="15dp"/>
 
     <EditText
         android:id="@+id/passInput"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         android:hint="كلمة المرور"
-        android:textColorHint="#94a3b8"
+        android:textColorHint="#64748b"
         android:textColor="#ffffff"
         android:inputType="textPassword"
         android:background="#1e293b"
-        android:padding="10dp"
+        android:padding="15dp"
         android:layout_marginBottom="25dp"/>
 
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="دخول آمن"
+        android:text="تسجيل الدخول"
         android:backgroundTint="#3b82f6"
         android:textColor="#ffffff"
-        android:textSize="18sp"/>
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"/>
+        
+    <Button
+        android:id="@+id/registerBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="إنشاء حساب جديد"
+        android:backgroundTint="#1e293b"
+        android:textColor="#38bdf8"
+        android:textSize="16sp"/>
 
 </LinearLayout>
