@@ -12,26 +12,25 @@ jobs:
     - name: 📥 سحب الكود من المستودع
       uses: actions/checkout@v4
 
-    - name: ☕ إعداد بيئة Java
+    - name: ☕ إعداد بيئة Java 17
       uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: 🔐 فك تشفير مفتاح Firebase
+    - name: 🔐 وضع مفتاح Firebase
       env:
         FIREBASE_SECRET: ${{ secrets.FIREBASE_JSON }}
       run: |
         echo $FIREBASE_SECRET | base64 -d > app/google-services.json
 
-    - name: 🏗️ توليد محرك Gradle متوافق (إصدار 8.0)
-      run: gradle wrapper --gradle-version 8.0
+    - name: 🐘 استدعاء محرك Gradle الرسمي
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.0'
 
-    - name: 🛠️ إعطاء صلاحيات التشغيل
-      run: chmod +x gradlew
-
-    - name: 🚀 بناء تطبيق الأندرويد (Release APK)
-      run: ./gradlew assembleRelease
+    - name: 🚀 بناء تطبيق الأندرويد مباشرة
+      run: gradle assembleRelease
 
     - name: 📦 استخراج ملف الـ APK
       uses: actions/upload-artifact@v4
