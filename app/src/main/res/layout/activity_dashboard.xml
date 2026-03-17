@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0f172a"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="لوحة تحكم العميل"
+        android:textColor="#3b82f6"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/balanceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="رصيد المقالات: جاري التحميل..."
+        android:textColor="#10b981"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="40dp"/>
+
+    <Button
+        android:id="@+id/generatePostBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="توليد ونشر مقال جديد"
+        android:backgroundTint="#3b82f6"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/watchAdBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="🎁 شاهد إعلان واربح مقال مجاني"
+        android:backgroundTint="#f59e0b"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="تسجيل الخروج"
+        android:backgroundTint="#ef4444"
+        android:textColor="#ffffff"/>
+
+</LinearLayout>

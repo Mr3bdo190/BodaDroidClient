@@ -1,5 +1,6 @@
 package com.bodadroid.client
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -21,80 +22,58 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
+        // إذا كان المستخدم مسجل دخول مسبقاً، انقله فوراً للوحة التحكم
+        if (auth.currentUser != null) {
+            startActivity(Intent(this, DashboardActivity::class.java))
+            finish()
+        }
+
         val emailInput = findViewById<EditText>(R.id.emailInput)
         val passInput = findViewById<EditText>(R.id.passInput)
         val loginBtn = findViewById<Button>(R.id.loginBtn)
         val registerBtn = findViewById<Button>(R.id.registerBtn)
 
-        // زر تسجيل الدخول
         loginBtn.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val pass = passInput.text.toString().trim()
-
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-                loginUser(email, pass)
-            } else {
-                Toast.makeText(this, "يرجى إدخال البيانات", Toast.LENGTH_SHORT).show()
-            }
+            if (email.isNotEmpty() && pass.isNotEmpty()) loginUser(email, pass)
         }
 
-        // زر إنشاء الحساب
         registerBtn.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val pass = passInput.text.toString().trim()
-
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-                if (pass.length < 6) {
-                    Toast.makeText(this, "كلمة المرور يجب أن تكون 6 أحرف على الأقل", Toast.LENGTH_SHORT).show()
-                } else {
-                    registerNewUser(email, pass)
-                }
-            } else {
-                Toast.makeText(this, "يرجى كتابة إيميل وباسورد لإنشاء الحساب", Toast.LENGTH_SHORT).show()
-            }
+            if (email.isNotEmpty() && pass.isNotEmpty()) registerNewUser(email, pass)
         }
     }
 
     private fun loginUser(email: String, pass: String) {
-        auth.signInWithEmailAndPassword(email, pass)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "تم الدخول! جاري التحقق من الباقة...", Toast.LENGTH_SHORT).show()
-                    // سيتم توجيهه للوحة التحكم في الخطوات القادمة
-                } else {
-                    Toast.makeText(this, "بيانات خاطئة أو الحساب غير موجود", Toast.LENGTH_LONG).show()
-                }
+        auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "تم الدخول بنجاح!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, DashboardActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, "بيانات خاطئة!", Toast.LENGTH_LONG).show()
             }
+        }
     }
 
     private fun registerNewUser(email: String, pass: String) {
-        Toast.makeText(this, "جاري إنشاء الحساب...", Toast.LENGTH_SHORT).show()
-        
-        auth.createUserWithEmailAndPassword(email, pass)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val userId = auth.currentUser?.uid
-                    
-                    // إنشاء ملف العميل في قاعدة البيانات برصيد 0
-                    val userMap = hashMapOf(
-                        "email" to email,
-                        "blogger_id" to "",
-                        "plan_type" to "free",
-                        "remaining_posts" to 0,
-                        "is_active" to false,
-                        "join_date" to Date().toString()
-                    )
-
-                    db.collection("Users").document(userId!!).set(userMap)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "🎉 تم إنشاء الحساب بنجاح! تواصل مع الإدارة لشحن رصيدك.", Toast.LENGTH_LONG).show()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "حدث خطأ أثناء حفظ البيانات", Toast.LENGTH_SHORT).show()
-                        }
-                } else {
-                    Toast.makeText(this, "فشل إنشاء الحساب: قد يكون الإيميل مستخدم مسبقاً", Toast.LENGTH_LONG).show()
+        auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                val userId = auth.currentUser?.uid
+                val userMap = hashMapOf(
+                    "email" to email, "blogger_id" to "", "plan_type" to "free",
+                    "remaining_posts" to 0, "is_active" to true, "join_date" to Date().toString()
+                )
+                db.collection("Users").document(userId!!).set(userMap).addOnSuccessListener {
+                    Toast.makeText(this, "تم إنشاء الحساب! شاهد الإعلانات لجمع رصيد.", Toast.LENGTH_LONG).show()
+                    startActivity(Intent(this, DashboardActivity::class.java))
+                    finish()
                 }
+            } else {
+                Toast.makeText(this, "فشل إنشاء الحساب!", Toast.LENGTH_LONG).show()
             }
+        }
     }
 }

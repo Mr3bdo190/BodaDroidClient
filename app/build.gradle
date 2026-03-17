@@ -36,8 +36,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     
-    // مكتبات Firebase السحرية
+    // مكتبات Firebase
     implementation platform('com.google.firebase:firebase-bom:32.1.0')
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
+    
+    // مكتبة إعلانات جوجل (AdMob)
+    implementation 'com.google.android.gms:play-services-ads:22.6.0'
 }
