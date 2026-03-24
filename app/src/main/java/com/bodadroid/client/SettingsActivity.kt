@@ -29,7 +29,6 @@ class SettingsActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         val userId = auth.currentUser?.uid ?: return
 
-        // ربط العناصر الجديدة الموجودة في التصميم الفخم
         val connectGoogleBtn = findViewById<Button>(R.id.connectGoogleBtn)
         bloggerStatusText = findViewById<TextView>(R.id.bloggerStatusText)
         val apiKeyInput = findViewById<EditText>(R.id.apiKeyInput)
@@ -42,12 +41,12 @@ class SettingsActivity : AppCompatActivity() {
                 val bloggerToken = doc.getString("blogger_token")
                 if (!bloggerToken.isNullOrEmpty()) {
                     bloggerStatusText.text = "Status: Connected ✅"
-                    bloggerStatusText.setTextColor(android.graphics.Color.parseColor("#00E5FF")) // لون سماوي نيون
+                    bloggerStatusText.setTextColor(android.graphics.Color.parseColor("#00E5FF"))
                 }
             }
         }
 
-        // إعدادات زر تسجيل الدخول بجوجل (لطلب صلاحية بلوجر)
+        // إعدادات زر تسجيل الدخول بجوجل
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestServerAuthCode(getString(R.string.default_web_client_id)) 
@@ -55,13 +54,11 @@ class SettingsActivity : AppCompatActivity() {
             .build()
         val googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // عند الضغط على زر الربط بجوجل
         connectGoogleBtn.setOnClickListener {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
 
-        // حفظ مفتاح Gemini API
         saveBtn.setOnClickListener {
             val apiK = apiKeyInput.text.toString().trim()
             if (apiK.isEmpty()) {
@@ -70,23 +67,23 @@ class SettingsActivity : AppCompatActivity() {
             }
             db.collection("Users").document(userId).update("api_key", apiK).addOnSuccessListener {
                 Toast.makeText(this, "Configuration Saved!", Toast.LENGTH_SHORT).show()
-                finish() // العودة للوحة التحكم بعد الحفظ
+                finish()
             }
         }
     }
 
-    // استقبال نتيجة الربط بجوجل
+    // هنا كان الخطأ وتم تصحيحه
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+        super.onActivityResult(requestCode, resultCode, data) 
+        
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)
-                val authCode = account?.serverAuthCode // هذا الكود السري اللي هيستخدمه السيرفر
+                val authCode = account?.serverAuthCode 
                 
                 if (authCode != null) {
                     val userId = auth.currentUser?.uid ?: return
-                    // حفظ الكود في Firebase
                     db.collection("Users").document(userId).update("blogger_token", authCode)
                     
                     bloggerStatusText.text = "Status: Connected ✅"
