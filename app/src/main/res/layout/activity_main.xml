@@ -4,67 +4,66 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#0f172a"
-    android:padding="20dp">
+    android:background="@drawable/bg_app_dark"
+    android:padding="24dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Boda Droid SaaS"
-        android:textColor="#3b82f6"
-        android:textSize="32sp"
+        android:text="Welcome back, Boda!"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="8dp"/>
         
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="منصة التدوين الآلي الذكية"
-        android:textColor="#94a3b8"
+        android:text="Ready to write? Login to continue."
+        android:textColor="#94A3B8"
         android:textSize="14sp"
         android:layout_marginBottom="40dp"/>
 
     <EditText
         android:id="@+id/emailInput"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:hint="البريد الإلكتروني"
-        android:textColorHint="#64748b"
-        android:textColor="#ffffff"
-        android:background="#1e293b"
-        android:padding="15dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_height="60dp"
+        android:hint="Email Address"
+        android:textColorHint="#64748B"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/bg_input_cyber"
+        android:paddingHorizontal="24dp"
+        android:layout_marginBottom="16dp"/>
 
     <EditText
         android:id="@+id/passInput"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:hint="كلمة المرور"
-        android:textColorHint="#64748b"
-        android:textColor="#ffffff"
+        android:layout_height="60dp"
+        android:hint="Password"
+        android:textColorHint="#64748B"
+        android:textColor="#FFFFFF"
         android:inputType="textPassword"
-        android:background="#1e293b"
-        android:padding="15dp"
-        android:layout_marginBottom="25dp"/>
+        android:background="@drawable/bg_input_cyber"
+        android:paddingHorizontal="24dp"
+        android:layout_marginBottom="32dp"/>
 
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="تسجيل الدخول"
-        android:backgroundTint="#3b82f6"
-        android:textColor="#ffffff"
+        android:text="LOGIN"
+        android:background="@drawable/bg_btn_neon"
+        android:textColor="#00E5FF"
         android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_marginBottom="10dp"/>
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
         
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="إنشاء حساب جديد"
-        android:backgroundTint="#1e293b"
-        android:textColor="#38bdf8"
-        android:textSize="16sp"/>
-
+        android:layout_height="50dp"
+        android:text="Create New Account"
+        android:background="@android:color/transparent"
+        android:textColor="#94A3B8"
+        android:textSize="14sp"/>
 </LinearLayout>

@@ -3,73 +3,103 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:background="#0f172a"
-    android:padding="20dp">
+    android:background="@drawable/bg_app_dark"
+    android:padding="24dp">
 
-    <TextView
-        android:id="@+id/planText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="الباقة: مجانية (تتضمن إعلانات)"
-        android:textColor="#94a3b8"
-        android:textSize="14sp"
-        android:layout_marginBottom="5dp"/>
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Creation Hub"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/planText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plan: Loading..."
+            android:textColor="#00E5FF"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/balanceText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="رصيد المقالات: --"
-        android:textColor="#10b981"
-        android:textSize="22sp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_slate"
+        android:padding="32dp"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Available Credits"
+            android:textColor="#94A3B8"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+        <TextView
+            android:id="@+id/balanceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--"
+            android:textColor="#FFFFFF"
+            android:textSize="48sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/generatePostBtn"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:text="AI GENERATE POST ✨"
+        android:background="@drawable/bg_btn_neon"
+        android:textColor="#00E5FF"
         android:textStyle="bold"
-        android:layout_marginBottom="30dp"/>
+        android:textSize="16sp"
+        android:layout_marginBottom="24dp"/>
 
     <Button
         android:id="@+id/settingsBtn"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:text="⚙️ إعدادات الربط (API &amp; Blogger)"
-        android:backgroundTint="#475569"
-        android:textColor="#ffffff"
-        android:layout_marginBottom="15dp"/>
-
-    <Button
-        android:id="@+id/generatePostBtn"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="توليد ونشر مقال جديد"
-        android:backgroundTint="#3b82f6"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:layout_marginBottom="15dp"/>
+        android:text="Configure API &amp; Blogger"
+        android:background="@drawable/bg_btn_slate"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="12dp"/>
 
     <Button
         android:id="@+id/watchAdBtn"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="🎁 شاهد إعلان واربح مقال"
-        android:backgroundTint="#f59e0b"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:layout_marginBottom="15dp"/>
+        android:layout_height="55dp"
+        android:text="Watch Ad for +1 Credit 🎁"
+        android:background="@drawable/bg_btn_slate"
+        android:textColor="#FCD34D"
+        android:layout_marginBottom="12dp"/>
 
     <Button
         android:id="@+id/upgradeBtn"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:text="🚀 الترقية لـ Pro (بدون إعلانات)"
-        android:backgroundTint="#8b5cf6"
-        android:textColor="#ffffff"
-        android:layout_marginBottom="15dp"/>
+        android:text="Upgrade to PRO 🚀"
+        android:background="@drawable/bg_btn_slate"
+        android:textColor="#C084FC"
+        android:layout_marginBottom="24dp"/>
+
+    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
 
     <Button
         android:id="@+id/logoutBtn"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="تسجيل الخروج"
-        android:backgroundTint="#ef4444"
-        android:textColor="#ffffff"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:text="Logout"
+        android:background="@android:color/transparent"
+        android:textColor="#EF4444"/>
 </LinearLayout>

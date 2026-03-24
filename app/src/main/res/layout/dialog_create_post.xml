@@ -19,8 +19,8 @@
         android:id="@+id/topicInput"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:hint="Article Topic (e.g. AI Future)"
-        android:textColorHint="#5A6B87"
+        android:hint="Article Topic"
+        android:textColorHint="#64748B"
         android:textColor="#FFFFFF"
         android:background="@drawable/bg_input_cyber"
         android:paddingHorizontal="16dp"
@@ -30,8 +30,8 @@
         android:id="@+id/nicheInput"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:hint="Niche (e.g. Technology)"
-        android:textColorHint="#5A6B87"
+        android:hint="Niche (e.g. Tech)"
+        android:textColorHint="#64748B"
         android:textColor="#FFFFFF"
         android:background="@drawable/bg_input_cyber"
         android:paddingHorizontal="16dp"
@@ -41,13 +41,12 @@
         android:id="@+id/instructionsInput"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:hint="Keywords, Tone of Voice..."
-        android:textColorHint="#5A6B87"
+        android:hint="Keywords, Tone..."
+        android:textColorHint="#64748B"
         android:textColor="#FFFFFF"
         android:background="@drawable/bg_input_cyber"
         android:padding="16dp"
         android:gravity="top|start"
-        android:inputType="textMultiLine"
         android:layout_marginBottom="24dp"/>
 
     <Button
@@ -57,6 +56,5 @@
         android:text="GENERATE &amp; PUBLISH"
         android:background="@drawable/bg_btn_neon"
         android:textColor="#00E5FF"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:textStyle="bold"/>
 </LinearLayout>

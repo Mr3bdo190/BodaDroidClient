@@ -10,14 +10,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DashboardActivity : AppCompatActivity() {
-
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private var rewardedAd: RewardedAd? = null
     private var currentBalance: Long = 0
     private var currentPlan: String = "free"
     private var userApiKey: String = ""
@@ -28,16 +33,14 @@ class DashboardActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+        MobileAds.initialize(this) {}
         val userId = auth.currentUser?.uid ?: return
 
         val planText = findViewById<TextView>(R.id.planText)
         val balanceText = findViewById<TextView>(R.id.balanceText)
-        val generatePostBtn = findViewById<Button>(R.id.generatePostBtn)
-        val settingsBtn = findViewById<Button>(R.id.settingsBtn)
+        val generateBtn = findViewById<Button>(R.id.generatePostBtn)
         val watchAdBtn = findViewById<Button>(R.id.watchAdBtn)
-        val upgradeBtn = findViewById<Button>(R.id.upgradeBtn)
-        val logoutBtn = findViewById<Button>(R.id.logoutBtn)
-
+        
         db.collection("Users").document(userId).addSnapshotListener { snapshot, e ->
             if (e != null || snapshot == null) return@addSnapshotListener
             currentBalance = snapshot.getLong("remaining_posts") ?: 0
@@ -45,109 +48,87 @@ class DashboardActivity : AppCompatActivity() {
             userApiKey = snapshot.getString("api_key") ?: ""
             balanceText.text = currentBalance.toString()
 
-            if (currentPlan == "pro" || currentPlan == "lifetime") {
-                planText.text = "Plan: PRO (No Ads)"
+            if (currentPlan != "free") {
+                planText.text = "Plan: PRO 👑"
                 planText.setTextColor(android.graphics.Color.parseColor("#C084FC"))
                 watchAdBtn.visibility = View.GONE
-                upgradeBtn.visibility = View.GONE
+                findViewById<Button>(R.id.upgradeBtn).visibility = View.GONE
             } else {
-                planText.text = "Plan: Free (Contains Ads)"
-                watchAdBtn.visibility = View.VISIBLE
-                upgradeBtn.visibility = View.VISIBLE
+                planText.text = "Plan: Free"
+                loadRewardedAd()
             }
         }
 
-        settingsBtn.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
-        watchAdBtn.setOnClickListener { Toast.makeText(this, "Loading Ad...", Toast.LENGTH_SHORT).show() }
-        upgradeBtn.setOnClickListener { Toast.makeText(this, "Upgrade feature coming soon!", Toast.LENGTH_SHORT).show() }
+        findViewById<Button>(R.id.settingsBtn).setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        findViewById<Button>(R.id.logoutBtn).setOnClickListener { auth.signOut(); startActivity(Intent(this, MainActivity::class.java)); finish() }
+        
+        watchAdBtn.setOnClickListener {
+            rewardedAd?.show(this) {
+                currentBalance += 1
+                db.collection("Users").document(userId).update("remaining_posts", currentBalance)
+                Toast.makeText(this, "Credit Added! 🎉", Toast.LENGTH_SHORT).show()
+                loadRewardedAd()
+            } ?: Toast.makeText(this, "Loading ad...", Toast.LENGTH_SHORT).show()
+        }
 
-        generatePostBtn.setOnClickListener {
+        generateBtn.setOnClickListener {
             if (userApiKey.isEmpty()) {
-                Toast.makeText(this, "Please save your Gemini API Key in Settings first!", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            if (currentBalance > 0) {
+                Toast.makeText(this, "Save API Key in settings first!", Toast.LENGTH_LONG).show()
+            } else if (currentBalance > 0) {
                 showCreatePostDialog(userId)
             } else {
-                Toast.makeText(this, "Zero Credits! Watch an ad to earn more.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Zero Credits! Watch an ad.", Toast.LENGTH_LONG).show()
             }
         }
+    }
 
-        logoutBtn.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
+    private fun loadRewardedAd() {
+        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
+            override fun onAdLoaded(ad: RewardedAd) { rewardedAd = ad }
+            override fun onAdFailedToLoad(adError: LoadAdError) { rewardedAd = null }
+        })
     }
 
     private fun showCreatePostDialog(userId: String) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_post, null)
-        val dialog = AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-            .setView(dialogView).create()
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val topicInput = dialogView.findViewById<EditText>(R.id.topicInput)
-        val nicheInput = dialogView.findViewById<EditText>(R.id.nicheInput)
-        val instructionsInput = dialogView.findViewById<EditText>(R.id.instructionsInput)
-        val confirmBtn = dialogView.findViewById<Button>(R.id.confirmGenerateBtn)
+        dialogView.findViewById<Button>(R.id.confirmGenerateBtn).setOnClickListener {
+            val topic = dialogView.findViewById<EditText>(R.id.topicInput).text.toString()
+            val niche = dialogView.findViewById<EditText>(R.id.nicheInput).text.toString()
+            val inst = dialogView.findViewById<EditText>(R.id.instructionsInput).text.toString()
 
-        confirmBtn.setOnClickListener {
-            val topic = topicInput.text.toString().trim()
-            val niche = nicheInput.text.toString().trim()
-            val instructions = instructionsInput.text.toString().trim()
-
-            if (topic.isEmpty() || niche.isEmpty()) {
-                Toast.makeText(this, "Topic and Niche are required!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            if (topic.isNotEmpty() && niche.isNotEmpty()) {
+                dialog.dismiss()
+                sendRequest(userId, topic, niche, inst)
+            } else {
+                Toast.makeText(this, "Fill required fields!", Toast.LENGTH_SHORT).show()
             }
-
-            dialog.dismiss()
-            sendPostRequestToServer(userId, topic, niche, instructions)
         }
         dialog.show()
     }
 
-    private fun sendPostRequestToServer(userId: String, topic: String, niche: String, instructions: String) {
-        val generatePostBtn = findViewById<Button>(R.id.generatePostBtn)
-        generatePostBtn.isEnabled = false
-        generatePostBtn.text = "AI IS THINKING..."
+    private fun sendRequest(userId: String, topic: String, niche: String, inst: String) {
+        val btn = findViewById<Button>(R.id.generatePostBtn)
+        btn.text = "AI IS THINKING..."
+        btn.isEnabled = false
 
-        val requestMap = hashMapOf(
-            "user_id" to userId,
-            "topic" to topic,
-            "niche" to niche,
-            "instructions" to instructions,
-            "status" to "pending",
-            "timestamp" to FieldValue.serverTimestamp()
-        )
-
-        db.collection("Requests").add(requestMap).addOnSuccessListener { docRef ->
+        val data = hashMapOf("user_id" to userId, "topic" to topic, "niche" to niche, "instructions" to inst, "status" to "pending", "timestamp" to FieldValue.serverTimestamp())
+        db.collection("Requests").add(data).addOnSuccessListener { doc ->
             currentBalance -= 1
             db.collection("Users").document(userId).update("remaining_posts", currentBalance)
             
-            docRef.addSnapshotListener { snapshot, e ->
-                if (e != null || snapshot == null) return@addSnapshotListener
-                val status = snapshot.getString("status")
-                val errorMsg = snapshot.getString("error")
-
-                if (status == "completed") {
-                    generatePostBtn.isEnabled = true
-                    generatePostBtn.text = "AI GENERATE POST"
-                    showResultDialog("SUCCESS! ✨", "Your article has been generated and published to your Blogger.")
-                } else if (status == "failed") {
-                    generatePostBtn.isEnabled = true
-                    generatePostBtn.text = "AI GENERATE POST"
-                    showResultDialog("FAILED ❌", "Failed to publish. Your credit was refunded.\nReason: $errorMsg")
+            doc.addSnapshotListener { snap, e ->
+                if (e != null || snap == null) return@addSnapshotListener
+                val status = snap.getString("status")
+                if (status == "completed" || status == "failed") {
+                    btn.text = "AI GENERATE POST ✨"
+                    btn.isEnabled = true
+                    val msg = if (status == "completed") "Published successfully! 🎉" else "Failed to publish. Credit refunded. ❌"
+                    AlertDialog.Builder(this).setTitle(status.uppercase()).setMessage(msg).setPositiveButton("OK", null).show()
                 }
             }
         }
-    }
-
-    private fun showResultDialog(title: String, message: String) {
-        AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-            .show()
     }
 }

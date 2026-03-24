@@ -3,49 +3,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:background="#0f172a"
-    android:padding="20dp">
+    android:background="@drawable/bg_app_dark"
+    android:padding="24dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="إعدادات الربط الخاصة بك"
-        android:textColor="#38bdf8"
-        android:textSize="22sp"
+        android:text="Control Panel"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"/>
 
-    <EditText
-        android:id="@+id/bloggerIdInput"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:hint="معرف مدونة بلوجر (Blogger ID)"
-        android:textColorHint="#64748b"
-        android:textColor="#ffffff"
-        android:background="#1e293b"
-        android:padding="15dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card_slate"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <EditText
-        android:id="@+id/apiKeyInput"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:hint="مفتاح الذكاء الاصطناعي (Gemini API Key)"
-        android:textColorHint="#64748b"
-        android:textColor="#ffffff"
-        android:background="#1e293b"
-        android:padding="15dp"
-        android:layout_marginBottom="25dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Google Account (Blogger)"
+            android:textColor="#94A3B8"
+            android:layout_marginBottom="8dp"/>
+            
+        <Button
+            android:id="@+id/connectGoogleBtn"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Connect Blogger 🔗"
+            android:background="@drawable/bg_btn_slate"
+            android:textColor="#EA4335"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
 
-    <Button
-        android:id="@+id/saveSettingsBtn"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="حفظ الإعدادات"
-        android:backgroundTint="#10b981"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/bloggerStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status: Disconnected ❌"
+            android:textColor="#EF4444"
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI Model Key"
+            android:textColor="#94A3B8"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/apiKeyInput"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="Gemini API Key..."
+            android:textColorHint="#64748B"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_input_cyber"
+            android:paddingHorizontal="20dp"
+            android:layout_marginBottom="32dp"/>
+
+        <Button
+            android:id="@+id/saveSettingsBtn"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="SAVE CONFIGURATION"
+            android:background="@drawable/bg_btn_neon"
+            android:textColor="#00E5FF"
+            android:textStyle="bold"/>
+    </LinearLayout>
 </LinearLayout>
