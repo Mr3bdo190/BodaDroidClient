@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Boda Droid SaaS</string>
+    <string name="app_name">Boda Droid</string>
+    <string name="default_web_client_id">dummy_client_id_to_pass_build</string>
 </resources>

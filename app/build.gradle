@@ -8,6 +8,15 @@ android {
     namespace 'com.bodadroid.client'
     compileSdk 33
 
+    signingConfigs {
+        release {
+            storeFile file("boda.keystore")
+            storePassword "123456"
+            keyAlias "boda"
+            keyPassword "123456"
+        }
+    }
+
     defaultConfig {
         applicationId "com.bodadroid.client"
         minSdk 21
@@ -15,10 +24,15 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -41,6 +55,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     
-    // مكتبة إعلانات جوجل (AdMob)
+    // 🚨 المكتبة اللي كانت ناقصة وعملت المشكلة دي كلها 🚨
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    
+    // مكتبة الإعلانات
     implementation 'com.google.android.gms:play-services-ads:22.6.0'
 }
